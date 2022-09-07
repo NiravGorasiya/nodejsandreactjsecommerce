@@ -1,15 +1,9 @@
-const Brand = require("../Models/Brand")
-
 const router = require("express").Router()
+const { addBrand, getAllBrand, editBrand, deleteBrand } = require("../controller/BrandController")
 
-router.post("/", async (req, res, next) => {
-    try {
-        const brand = new Brand(req.body)
-        const result = await brand.save();
-        res.status(201).json({ message: "Brand successfull create ❤ " })
-    } catch (error) {
-
-    }
-})
+router.post("/add", addBrand);
+router.get("/all", getAllBrand);
+router.put("/edit/:id", editBrand)
+router.delete("/delete/:id", deleteBrand)
 
 module.exports = router

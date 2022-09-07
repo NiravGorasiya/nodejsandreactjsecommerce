@@ -1,9 +1,13 @@
 const mongoose = require("mongoose")
 
-mongoose.connect("mongodb://localhost:27017/E-commerce")
+
+mongoose.connect(process.env.MONGODBURl)
     .then((res) => {
         console.log("Successfull database connection");
     })
     .catch((err) => {
-        console.log("not database connection");
+        console.log(err, "not database connection");
     })
+
+
+

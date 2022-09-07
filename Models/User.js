@@ -20,6 +20,14 @@ const userSchema = new mongoose.Schema({
     userOtp: {
         type: String,
         required: false
+    },
+    status: {
+        type: Boolean,
+        default: true
+    },
+    isDelete: {
+        type: String,
+        required: false
     }
 }, {
     timestamps: false

@@ -3,11 +3,15 @@ const mongoose = require("mongoose")
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
+        required: [true, "name is required"]
+    },
+    stock: {
+        type: Boolean,
         required: false
     },
     brand_id: {
         type: mongoose.Types.ObjectId,
-        ref: "Brand"
+        ref: "brand"
     },
     upcomingProduct: {
         type: Boolean,
@@ -21,10 +25,11 @@ const productSchema = new mongoose.Schema({
         type: String,
         require: false
     },
-    category_id: {
+    category_id: [{
         type: mongoose.Types.ObjectId,
-        required: false
-    },
+        required: [true, "category id is required"],
+        ref: "Category"
+    }],
     colors_id: {
         type: [mongoose.Types.ObjectId],
         ref: "Color"
@@ -33,27 +38,23 @@ const productSchema = new mongoose.Schema({
         type: [mongoose.Types.ObjectId],
         ref: "Size"
     },
-    attributed: [{
-        name: {
-            type: String,
-            required: false
+    attributes: [{
+        _id: false,
+        attributes_id: {
+            type: mongoose.Types.ObjectId,
+            ref: "attribute",
         },
-        attribute: [
-            {
-                name: {
-                    type: String,
-                    required: false
-                },
-                value: {
-                    type: String,
-                    required: false
-                }
-            },
-        ]
+        attributes_value: [{
+            _id: false,
+            attribute_value_id: {
+                type: mongoose.Types.ObjectId,
+                ref: "attribute"
+            }
+        }]
     }],
     description: {
         type: String,
-        required: false
+        required: [true, "description is required"]
     },
     review: [{
         name: {
@@ -82,9 +83,19 @@ const productSchema = new mongoose.Schema({
         default: "percent",
         enum: ["percent", "amout"],
         lowercase: true
+    },
+    isDelete: {
+        type: Boolean,
+        default: false
+    },
+    status: {
+        type: Boolean,
+        default: true
     }
 }, {
     timestamps: true
 })
 
 module.exports = mongoose.model("Product", productSchema)
+
+

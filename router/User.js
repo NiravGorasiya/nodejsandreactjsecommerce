@@ -2,6 +2,7 @@ const { userLogin, userRegister, userChangePassword, useremailsend, userResetpas
 const User = require("../Models/User");
 const router = require("express").Router()
 const { isvalidateToken } = require("../util/User")
+
 router.post("/", (req, res, next) => {
     try {
         const user = new User(req.body)

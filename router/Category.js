@@ -1,16 +1,8 @@
-const Category = require("../Models/Category");
-
 const router = require("express").Router();
+const { addCategory, getAllCategory, updateCategory, deleteCategory } = require("../controller/CategoryController")
 
-router.post("/", async (req, res, next) => {
-    try {
-        const category = new Category(req.body);
-        const result = await category.save();
-        res.status(201).json({ message: "success fully category add", result })
-    } catch (error) {
-        console.log(error, "error");
-        res.status(400).json({ error: "error" })
-    }
-})
-
+router.post("/add", addCategory);
+router.get("/all", getAllCategory)
+router.put("/edit/:id", updateCategory)
+router.delete("/delete/:id", deleteCategory)
 module.exports = router;

@@ -1,12 +1,23 @@
 const mongoose = require("mongoose")
 
 const BrandSchema = new mongoose.Schema({
-    name: {
+    brand_name: {
         type: String,
-        required: false
+        required: [true, "brand_name required"],
+        unique: true
+    },
+    isDelete: {
+        type: String,
+        required: false,
+        default: false
+    },
+    status: {
+        type: String,
+        required: false,
+        default: true
     }
 }, {
     timestamps: true
 })
 
-module.exports = mongoose.model("Brand", BrandSchema)
+module.exports = mongoose.model("brand", BrandSchema)
