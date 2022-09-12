@@ -10,6 +10,15 @@ const Product_Attribute_Group = new mongoose.Schema({
         type: String,
         required: true
     },
+    attributes: [
+        {
+            _id: false,
+            attribute_id: {
+                type: mongoose.Types.ObjectId,
+                ref: "attribute"
+            }
+        }
+    ],
     isDelete: {
         type: Boolean,
         default: false
@@ -20,4 +29,4 @@ const Product_Attribute_Group = new mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model("Attiribute_Group", Product_Attribute_Group)
+module.exports = mongoose.model("attiribute_group", Product_Attribute_Group)

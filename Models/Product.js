@@ -22,7 +22,7 @@ const productSchema = new mongoose.Schema({
         default: false
     },
     image: {
-        type: String,
+        type: Array,
         require: false
     },
     category_id: [{

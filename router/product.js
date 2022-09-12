@@ -32,10 +32,10 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ fileFilter: fileFilter, storage: storage });
 
-router.post("/add", upload.single('image'), addProduct)
+router.post("/add", upload.array('image'), addProduct)
 router.get("/all", getAllProduct)
 router.delete("/delete/:id", deleteProduct)
-router.put("/update/:id", upload.single('image'), updateProduct)
+router.put("/update/:id", upload.array('image'), updateProduct)
 
 
 module.exports = router

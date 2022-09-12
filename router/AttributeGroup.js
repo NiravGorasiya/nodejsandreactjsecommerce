@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const { addProductAttributeGroup, getAllProductAttributeGroup, editProductAttributeGroup, deleteProductAttribute } = require("../controller/AttributeGroupController")
+const { addAttributeGroup, getAllAttributeGroup, editAttributeGroup, deleteAttribute } = require("../controller/AttributeGroupController")
 
-router.post("/add", addProductAttributeGroup)
-router.get("/all", getAllProductAttributeGroup)
-router.put("/edit/:id", editProductAttributeGroup)
-router.delete("/delete/:id", deleteProductAttribute)
+router.post("/add", addAttributeGroup)
+router.get("/all", getAllAttributeGroup)
+router.put("/edit/:id", editAttributeGroup)
+router.delete("/delete/:id", deleteAttribute)
 
 module.exports = router;

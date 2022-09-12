@@ -1,9 +1,13 @@
 const Product = require("../Models/Product")
 const { createResponse, successResponce, queryErrorRelatedResponse } = require("../util/SendResponse")
 const { isValidObjectedId } = require("../helper/common-function")
-
+const fs = require("fs")
 const addProduct = async (req, res, next) => {
     try {
+        let file = []
+        for (i = 0; i < req.files.length; i++) {
+            file.push(req.files[i].filename)
+        }
         const product = new Product({
             name: req.body.name,
             brand_id: req.body.brand_id,
@@ -15,8 +19,7 @@ const addProduct = async (req, res, next) => {
             description: req.body.description,
             review: req.body.review,
             attributes: req.body.attributes,
-            image: req.file.filename
-
+            image: file
         });
         const result = await product.save();
         return createResponse(req, res, result);
@@ -50,6 +53,14 @@ const getAllProduct = async (req, res, next) => {
                     from: "attributes",
                     localField: "attributes.attributes_id",
                     foreignField: "_id",
+                    as: "data"
+                }
+            },
+            {
+                $lookup: {
+                    from: "attributes",
+                    localField: "attributes.attributes_id",
+                    foreignField: "_id",
                     let: {
                         attribute_values_ids: {
                             $reduce: {
@@ -67,7 +78,7 @@ const getAllProduct = async (req, res, next) => {
                     pipeline: [{
                         $project: {
                             _id: 1,
-                            product_group_id: 1,
+                            arrtibute_group_id: 1,
                             name: 1,
                             value: {
                                 $filter:
@@ -81,8 +92,8 @@ const getAllProduct = async (req, res, next) => {
                     },
                     {
                         $lookup: {
-                            from: "product_attiribute_groups",
-                            localField: "product_group_id",
+                            from: "attiribute_groups",
+                            localField: "arrtibute_group_id",
                             foreignField: "_id",
                             as: "attributegroup"
                         }
@@ -90,7 +101,6 @@ const getAllProduct = async (req, res, next) => {
                     ],
                     as: "attributes",
                 }
-
             },
             {
                 $project: {
@@ -104,7 +114,8 @@ const getAllProduct = async (req, res, next) => {
                     "status": 1,
                     "brand.brand_name": 1,
                     "attributes": 1,
-                    "category.category_name": 1,
+                    "atoup": 1,
+                    "category.category_name": 1
                 }
             }
         ])
@@ -118,6 +129,7 @@ const deleteProduct = async (req, res, next) => {
     try {
         let id = mongoose.Types.ObjectId(req.params.id)
         const product = await Product.findById(id)
+
         if (!product) {
             queryErrorRelatedResponse(req, res, 404, "product not found")
         }
@@ -133,6 +145,10 @@ const updateProduct = async (req, res, next) => {
         if (!isValidObjectedId(req.params.id)) {
             return queryErrorRelatedResponse(req, res, 404, "Error in invalid product")
         }
+        let file = []
+        for (i = 0; i < req.files.length; i++) {
+            file.push(req.files[i].filename)
+        }
         const product = await Product.findByIdAndUpdate({ _id: req.params.id }, {
             name: req.body.name,
             brand_id: req.body.brand_id,
@@ -144,9 +160,8 @@ const updateProduct = async (req, res, next) => {
             description: req.body.description,
             review: req.body.review,
             attributes: req.body.attributes,
-            image: req.file.filename
+            image: file
         }, { new: true })
-        return successResponce(req, res, product)
     } catch (error) {
         next(error);
     }

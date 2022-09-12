@@ -35,7 +35,6 @@ const editBrand = async (req, res, next) => {
 const deleteBrand = async (req, res, next) => {
     try {
         const brand = await Brand.findById(req.params.id)
-        console.log(brand);
         if (!brand) {
             queryErrorRelatedResponse(req, res, 404, "Brand not found")
         }

@@ -11,7 +11,7 @@ const Product = () => {
     const [value, setValue] = useState("")
 
     useEffect(() => {
-        axios.get("http://localhost:3000/product")
+        axios.get("http://localhost:3000/product/all")
             .then((res) => {
                 setList(res.data);
                 console.log(res, "response");

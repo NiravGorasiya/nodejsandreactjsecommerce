@@ -1,16 +1,9 @@
-const Color = require("../Models/Color");
-
 const router = require("express").Router();
+const { addColor, getAll, updateColor, delteColor } = require("../controller/ColorController")
 
-router.post("/", async (req, res, next) => {
-    try {
-        const color = new Color(req.body);
-        const result = await color.save();
-        res.status(201).json(result)
-    } catch (error) {
-        console.log(error, "error");
-    }
-})
-
+router.post("/add", addColor)
+router.get("/all", getAll)
+router.put("/update/:id", updateColor)
+router.delete("/delete/:id", delteColor)
 
 module.exports = router;

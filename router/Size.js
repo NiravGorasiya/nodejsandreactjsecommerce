@@ -1,15 +1,8 @@
-const Size = require("../Models/Size")
-
 const router = require("express").Router()
+const { addSize, getAllSize, deleteSize, updateSize } = require("../controller/SizeController")
 
-router.post("/", async (req, res, next) => {
-    try {
-        const size = new Size(req.body);
-        const result = await size.save();
-        res.status(201).json(result)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
-
+router.post("/add", addSize)
+router.get("/all", getAllSize)
+router.delete("/delete/:id", deleteSize)
+router.put("/update/:id", updateSize)
 module.exports = router
