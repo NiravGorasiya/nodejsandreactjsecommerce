@@ -1,5 +1,5 @@
-const router = require("express").Router()
-const { addBrand, getAllBrand, editBrand, deleteBrand } = require("../controller/BrandController")
+const router = require("express").Router();
+const { addNews, getAllNews, editNews, deleteNews } = require("../controller/NewsController");
 
 const multer = require('multer');
 const path = require("path")
@@ -33,11 +33,9 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ fileFilter: fileFilter, storage: storage });
 
-
-
-router.post("/add", upload.fields([{ name: 'brand_logo', maxCount: 1 }, { name: 'brand_banner', maxCount: 1 }]), addBrand);
-router.get("/all", getAllBrand);
-router.put("/edit/:id", upload.fields([{ name: 'brand_logo', maxCount: 1 }, { name: 'brand_banner', maxCount: 1 }]), editBrand)
-router.delete("/delete/:id", deleteBrand)
+router.post("/add", upload.single("image"), addNews)
+router.get("/all", getAllNews)
+router.put("/update/:id", upload.single("image"), editNews)
+router.delete("/delete/:id", deleteNews)
 
 module.exports = router

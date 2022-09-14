@@ -9,7 +9,6 @@ const addTags = async (req, res, next) => {
             const Exittags = await Tags.findOne({ name: item }, { ordered: false })
             if (!Exittags) tagList.push({ name: item })
         })
-
         await Promise.all(promise)
         const result = await Tags.insertMany(tagList)
         createResponse(req, res, result)

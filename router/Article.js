@@ -1,8 +1,8 @@
 const router = require("express").Router()
-const { addBrand, getAllBrand, editBrand, deleteBrand } = require("../controller/BrandController")
-
+const { addAtricle, getAllArticle, editArticle, deleteArticle } = require("../controller/ArticleController")
 const multer = require('multer');
 const path = require("path")
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './public/uploads');
@@ -33,11 +33,9 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ fileFilter: fileFilter, storage: storage });
 
-
-
-router.post("/add", upload.fields([{ name: 'brand_logo', maxCount: 1 }, { name: 'brand_banner', maxCount: 1 }]), addBrand);
-router.get("/all", getAllBrand);
-router.put("/edit/:id", upload.fields([{ name: 'brand_logo', maxCount: 1 }, { name: 'brand_banner', maxCount: 1 }]), editBrand)
-router.delete("/delete/:id", deleteBrand)
+router.post("/add", upload.single("image"), addAtricle)
+router.get("/all", getAllArticle)
+router.put("/update/:id", upload.single("image"), editArticle)
+router.delete("/delete/:id", deleteArticle)
 
 module.exports = router

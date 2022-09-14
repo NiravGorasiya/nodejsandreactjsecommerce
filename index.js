@@ -13,29 +13,32 @@ app.use(cors())
 
 
 const category = require("./router/Category")
-const color = require("./router/Color")
 const Brand = require("./router/Brand")
-const Size = require("./router/Size")
 const User = require("./router/User")
 const product = require("./router/product")
 const ProductAttribute = require("./router/Attribute")
 const tags = require("./router/Tags")
 const ProductAttributeGroup = require("./router/AttributeGroup")
+const Review = require("./router/Review")
+const News = require("./router/News")
+const Article = require("./router/Article")
 
-app.use("/category", category)
-app.use("/color", color)
-app.use("/brand", Brand)
-app.use("/size", Size)
-app.use("/user", User)
-app.use("/product", product)
-app.use("/tags", tags)
-app.use("/attribute", ProductAttribute)
-app.use("/attribute_group", ProductAttributeGroup)
+const api = process.env.PRIFIX
+
+app.use(api + "/category", category)
+app.use(api + "/brand", Brand)
+app.use(api + "/user", User)
+app.use(api + "/attribute_group", ProductAttributeGroup)
+app.use(api + "/attribute", ProductAttribute)
+app.use(api + "/product", product)
+app.use(api + "/tags", tags)
+app.use(api + "/review", Review)
+app.use(api + "/article", Article)
+app.use(api + "/news", News)
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })
-
 
 app.all('*', function (req, res, next) {
     return res.status(404).json({ error: "page not found" })

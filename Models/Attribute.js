@@ -1,12 +1,6 @@
 const mongoose = require("mongoose")
 
 const productAttribute = new mongoose.Schema({
-    arrtibute_group_id: {
-        type: mongoose.Types.ObjectId,
-        required: false,
-        ref: "attiribute_group",
-        trim: true
-    },
     name: {
         type: String,
         required: true,

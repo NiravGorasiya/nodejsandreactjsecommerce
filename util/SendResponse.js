@@ -10,6 +10,10 @@ const successResponce = (req, res, data) => {
     res.json({ isSuccess: true, status: 200, info: data });
 }
 
+const notExistResponse = (req, res, data) => {
+    res.status(422);
+    res.json({ isSuccess: true, status: 422, info: data })
+}
 // Delete response (reqeust , response and message that want to dispay)
 const deleteResponce = (req, res, data) => {
     res.status(202);
@@ -29,5 +33,5 @@ const successResponceOfAvatar = (req, res, message, baseurl) => {
 }
 module.exports = {
     createResponse, successResponce, deleteResponce,
-    queryErrorRelatedResponse, successResponceOfAvatar
+    queryErrorRelatedResponse, successResponceOfAvatar, notExistResponse
 }

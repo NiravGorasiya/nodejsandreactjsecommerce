@@ -30,14 +30,6 @@ const productSchema = new mongoose.Schema({
         required: [true, "category id is required"],
         ref: "Category"
     }],
-    colors_id: {
-        type: [mongoose.Types.ObjectId],
-        ref: "Color"
-    },
-    sizes_id: {
-        type: [mongoose.Types.ObjectId],
-        ref: "Size"
-    },
     attributes: [{
         _id: false,
         attributes_id: {
@@ -52,37 +44,13 @@ const productSchema = new mongoose.Schema({
             }
         }]
     }],
+    tags: [{
+        type: mongoose.Types.ObjectId,
+        required: false
+    }],
     description: {
         type: String,
         required: [true, "description is required"]
-    },
-    review: [{
-        name: {
-            type: String,
-            required: false
-        },
-        rating: {
-            type: String,
-            required: false
-        },
-        comment: {
-            type: String,
-            required: false
-        },
-        user: {
-            type: mongoose.Types.ObjectId,
-            ref: "User"
-        }
-    }],
-    tax: {
-        type: Number,
-        required: false
-    },
-    tax_price: {
-        type: String,
-        default: "percent",
-        enum: ["percent", "amout"],
-        lowercase: true
     },
     isDelete: {
         type: Boolean,
