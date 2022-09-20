@@ -27,6 +27,8 @@ const Product_Attribute_Group = new mongoose.Schema({
         type: Boolean,
         default: true
     }
+}, {
+    timestamps: true
 })
 
 module.exports = mongoose.model("attiribute_group", Product_Attribute_Group)

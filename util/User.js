@@ -9,7 +9,7 @@ exports.isvalidateToken = async (req, res, next) => {
                 message: "token not found"
             })
         }
-        const verified = jwt.verify(token, process.env.SECREATEKEY)
+        const verified = jwt.verify(token, process.env.SECRETEKEY)
         const user = await User.findOne({ _id: verified._id })
         req.user = user;
         next()

@@ -3,23 +3,29 @@ const { createResponse, successResponce, queryErrorRelatedResponse, deleteRespon
 const fs = require("fs")
 const addAtricle = async (req, res, next) => {
     try {
+        const { title, description, user_id, comments } = req.body
         const article = new Article({
-            name: req.body.name,
-            description: req.body.description,
-            user_id: req.body.user_id,
+            title,
+            description,
+            user_id,
             image: req.file.filename,
-            comment: req.body.comment
+            comments
         })
         const result = await article.save();
         return createResponse(req, res, result)
     } catch (error) {
-        return res.status(500).json(error)
+        return res.status(500).json(error.message)
     }
 }
 
 const getAllArticle = async (req, res, next) => {
     try {
-        const result = await Article.find();
+        const page = req.query.page || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = page * limit - limit;
+        const result = await Article.find()
+            .skip(skip)
+            .limit(limit);
         return res.status(200).json(result)
     } catch (error) {
         return res.status(500).json(error)
@@ -46,7 +52,7 @@ const editArticle = async (req, res, next) => {
         const article = await Article.findOneAndUpdate({ _id: req.params.id },
             {
                 $set: {
-                    name: req.body.name,
+                    title: req.body.title,
                     description: req.body.description,
                     user_id: req.body.user_id,
                     image: image,

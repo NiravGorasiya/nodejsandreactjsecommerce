@@ -11,9 +11,10 @@ const addAttribute = async (req, res, next) => {
             findName.save()
             return createResponse(req, res, findName)
         } else {
+            const { value, name } = req.body
             let productAttribute = new Attribute({
-                value: req.body.value,
-                name: req.body.name
+                value,
+                name
             })
             const result = await productAttribute.save();
             return createResponse(req, res, result)
@@ -25,7 +26,12 @@ const addAttribute = async (req, res, next) => {
 
 const getAllProductAttribute = async (req, res, next) => {
     try {
-        const productAttribute = await Attribute.find();
+        const page = req.query.page || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = page * limit - limit;
+        const productAttribute = await Attribute.find()
+            .skip(skip)
+            .limit(limit);
         return successResponce(req, res, productAttribute);
     } catch (error) {
         return res.status(500).json({ error: error })

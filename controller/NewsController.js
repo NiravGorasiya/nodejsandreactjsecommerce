@@ -4,12 +4,13 @@ const fs = require("fs")
 
 const addNews = async (req, res, next) => {
     try {
+        const { title, description, user_id, comments } = req.body
         const news = new News({
-            name: req.body.name,
-            description: req.body.description,
-            user_id: req.body.user_id,
+            title,
+            description,
+            user_id,
             image: req.file.filename,
-            comment: req.body.comment
+            comments
         })
         const result = await news.save();
         return createResponse(req, res, result)
@@ -20,7 +21,12 @@ const addNews = async (req, res, next) => {
 
 const getAllNews = async (req, res, next) => {
     try {
-        const result = await News.find();
+        const page = req.query.page || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = page * limit - limit;
+        const result = await News.find()
+            .skip(skip)
+            .limit(limit);
         return res.status(200).json(result)
     } catch (error) {
         return res.status(500).json(error)
@@ -73,3 +79,4 @@ const deleteNews = async (req, res, next) => {
 }
 
 module.exports = { addNews, getAllNews, editNews, deleteNews }
+

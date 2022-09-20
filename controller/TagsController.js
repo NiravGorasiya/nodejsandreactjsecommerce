@@ -20,7 +20,12 @@ const addTags = async (req, res, next) => {
 
 const getAllTags = async (req, res, next) => {
     try {
+        const page = req.query.page || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = page * limit - limit;
         const result = await Tags.find()
+            .skip(skip)
+            .limit(limit);
         successResponce(req, res, result)
     } catch (error) {
         return res.status(500).json(error)

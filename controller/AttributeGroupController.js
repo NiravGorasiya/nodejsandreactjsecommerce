@@ -14,6 +14,9 @@ const addAttributeGroup = async (req, res, next) => {
 
 const getAllAttributeGroup = async (req, res, next) => {
     try {
+        const page = req.query.page || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = page * limit - limit;
         const result = await ProductAttributeGroup.aggregate([
             {
                 $lookup: {
@@ -28,7 +31,8 @@ const getAllAttributeGroup = async (req, res, next) => {
                     "attribute.name": 1
                 }
             }
-        ])
+        ]).skip(skip)
+            .limit(limit);
         return successResponce(req, res, result)
     } catch (error) {
         return res.status(500).json({ error: error.message })

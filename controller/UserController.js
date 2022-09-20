@@ -12,10 +12,11 @@ const userRegister = async (req, res, next) => {
         } else {
             const salt = bcrypt.genSaltSync(10);
             const hash = bcrypt.hashSync(req.body.password, salt);
+            const { username, email, phone } = req.body
             const user = new User({
-                username: req.body.username,
-                email: req.body.email,
-                phone: req.body.password,
+                username,
+                email,
+                phone,
                 password: hash
             })
             const result = await user.save()

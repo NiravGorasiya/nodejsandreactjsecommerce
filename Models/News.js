@@ -1,9 +1,9 @@
 const mongoose = require("mongoose")
 
 const NewsSchema = new mongoose.Schema({
-    name: {
+    title: {
         type: String,
-        required: [true, "name is required"]
+        required: [true, "title is required"]
     },
     image: {
         type: String
@@ -19,9 +19,19 @@ const NewsSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         required: [true, "user_id is required"]
     },
-    comment: [{
+    comments: [{
         user_id: {
-            type: mongoose.Types.ObjectId
+            type: mongoose.Types.ObjectId,
+            ref: "User",
+            required: true
+        },
+        text: {
+            type: String,
+            required: true
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
         }
     }]
 }, {
@@ -29,3 +39,4 @@ const NewsSchema = new mongoose.Schema({
 })
 
 module.exports = mongoose.model("news", NewsSchema)
+

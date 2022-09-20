@@ -5,10 +5,11 @@ const { createResponse, successResponce, queryErrorRelatedResponse, deleteRespon
 const fs = require("fs")
 const addBrand = async (req, res, next) => {
     try {
+        const { description, slug, brand_name } = req.body
         const brand = new Brand({
-            description: req.body.description,
-            slug: req.body.slug,
-            brand_name: req.body.brand_name,
+            description,
+            slug,
+            brand_name,
             brand_logo: req.files.brand_logo[0].filename,
             brand_banner: req.files.brand_banner[0].filename
         });
@@ -21,7 +22,12 @@ const addBrand = async (req, res, next) => {
 
 const getAllBrand = async (req, res, next) => {
     try {
+        const page = req.query.page || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = page * limit - limit;
         const result = await Brand.find()
+            .skip(skip)
+            .limit(limit);
         return successResponce(req, res, result)
     } catch (error) {
         res.status(501).json({ error: error })

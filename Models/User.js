@@ -11,19 +11,19 @@ const userSchema = new mongoose.Schema({
     },
     username: {
         type: String,
-        required: false
+        required: [true, "username is required"]
     },
     email: {
         type: String,
-        required: false
+        required: [true, "email is required"]
     },
     phone: {
         type: Number,
-        required: false
+        required: [true, "phone is required"]
     },
     password: {
         type: String,
-        required: false
+        required: [true, '[assword is required']
     },
     userOtp: {
         type: String,

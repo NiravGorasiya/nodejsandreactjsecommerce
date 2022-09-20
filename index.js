@@ -22,6 +22,7 @@ const ProductAttributeGroup = require("./router/AttributeGroup")
 const Review = require("./router/Review")
 const News = require("./router/News")
 const Article = require("./router/Article")
+require("./javascipt")
 
 const api = process.env.PRIFIX
 

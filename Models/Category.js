@@ -6,6 +6,13 @@ const categorySchema = new mongoose.Schema({
         required: [true, "category_name is required"],
         unique: true
     },
+    slug: {
+        type: String,
+        required: [true, "sulg is required"]
+    },
+    image: {
+        type: String
+    },
     description: {
         type: String,
         required: false

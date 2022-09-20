@@ -2,6 +2,7 @@ const Product = require("../Models/Product")
 const { createResponse, successResponce, queryErrorRelatedResponse } = require("../util/SendResponse")
 const { isValidObjectedId } = require("../helper/common-function")
 const fs = require("fs")
+const Brand = require("../Models/Brand")
 
 const addProduct = async (req, res, next) => {
     try {
@@ -9,14 +10,16 @@ const addProduct = async (req, res, next) => {
         for (i = 0; i < req.files.length; i++) {
             file.push(req.files[i].filename)
         }
+        const { name, brand_id, category_id, description, review, tags, reviews, attributes } = req.body
         const product = new Product({
-            name: req.body.name,
-            brand_id: req.body.brand_id,
-            category_id: req.body.category_id,
-            description: req.body.description,
-            review: req.body.review,
-            tags: req.body.tags,
-            attributes: req.body.attributes,
+            name,
+            brand_id,
+            category_id,
+            description,
+            review,
+            tags,
+            attributes,
+            reviews,
             image: file
         });
         const result = await product.save();
@@ -29,6 +32,9 @@ const addProduct = async (req, res, next) => {
 
 const getAllProduct = async (req, res, next) => {
     try {
+        const page = req.query.page || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = page * limit - limit;
         const result = await Product.aggregate([
             {
                 $lookup: {
@@ -51,63 +57,47 @@ const getAllProduct = async (req, res, next) => {
                     from: "attributes",
                     localField: "attributes.attributes_id",
                     foreignField: "_id",
-                    as: "attributes"
+                    let: {
+                        attribute_values_ids: {
+                            $reduce: {
+                                input: "$attributes.attributes_value",
+                                initialValue: [],
+                                in: {
+                                    $concatArrays: [
+                                        "$$value",
+                                        "$$this.attribute_value_id"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    pipeline: [{
+                        $project: {
+                            _id: 1,
+                            name: 1,
+                            value: {
+                                $filter:
+                                {
+                                    input: "$value",
+                                    as: "grade",
+                                    cond: { $in: ["$$grade._id", "$$attribute_values_ids"] }
+                                }
+                            },
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: "attiribute_groups",
+                            localField: "_id",
+                            foreignField: "attributes.attribute_id",
+                            as: "attributesgroup"
+                        }
+                    }
+                    ],
+                    as: "attributes",
                 }
             },
-            {
-                $lookup: {
-                    from: "attiribute_groups",
-                    localField: "attributes._id",
-                    foreignField: "attributes.attribute_id",
-                    as: "attributesgroup"
-                }
-            },
-            // {
-            //     $lookup: {
-            //         from: "attributes",
-            //         localField: "attributes.attributes_id",
-            //         foreignField: "_id",
-            //         let: {
-            //             attribute_values_ids: {
-            //                 $reduce: {
-            //                     input: "$attributes.attributes_value",
-            //                     initialValue: [],
-            //                     in: {
-            //                         $concatArrays: [
-            //                             "$$value",
-            //                             "$$this.attribute_value_id"
-            //                         ]
-            //                     }
-            //                 }
-            //             }
-            //         },
-            //         pipeline: [{
-            //             $project: {
-            //                 _id: 1,
-            //                 arrtibute_group_id: 1,
-            //                 name: 1,
-            //                 value: {
-            //                     $filter:
-            //                     {
-            //                         input: "$value",
-            //                         as: "grade",
-            //                         cond: { $in: ["$$grade._id", "$$attribute_values_ids"] }
-            //                     }
-            //                 },
-            //             },
-            //         },
-            //         {
-            //             $lookup: {
-            //                 from: "attiribute_groups",
-            //                 localField: "arrtibute_group_id",
-            //                 foreignField: "_id",
-            //                 as: "attributegroup"
-            //             }
-            //         }
-            //         ],
-            //         as: "attributes",
-            //     }
-            // },
+
             {
                 $group: {
                     _id: {
@@ -120,15 +110,17 @@ const getAllProduct = async (req, res, next) => {
                         category: "$category.category_name",
                         brand: "$brand.brand_name"
                     },
-                    "attributesgroup": {
+                    "group": {
                         $push: {
-                            "group": "$attributesgroup",
-                            "attribues": "$attributes"
-                        },
+                            "group": "$attributes.attributesgroup"
+
+                        }
+
                     }
                 }
             }
-        ])
+        ]).skip(skip)
+            .limit(limit);
         return successResponce(req, res, result)
     } catch (error) {
         next(error);
@@ -174,4 +166,14 @@ const updateProduct = async (req, res, next) => {
         return res.status(500).json(error)
     }
 }
-module.exports = { addProduct, getAllProduct, deleteProduct, updateProduct }
+
+const productFilter = async (req, res, next) => {
+    try {
+        const brand = await Brand.findOne({ brand_name: req.query.brand })
+        const product = await Product.findOne({ brand_id: brand._id })
+        return res.status(200).json(product)
+    } catch (error) {
+        console.log(error, "error");
+    }
+}
+module.exports = { addProduct, getAllProduct, deleteProduct, updateProduct, productFilter }

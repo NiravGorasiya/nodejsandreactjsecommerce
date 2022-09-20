@@ -13,7 +13,12 @@ const addReview = async (req, res, next) => {
 
 const getAllreview = async (req, res, next) => {
     try {
-        const result = await Review.find();
+        const page = req.query.page || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = page * limit - limit;
+        const result = await Review.find()
+            .skip(skip)
+            .limit(limit);
         return successResponce(req, res, result)
     } catch (error) {
         return res.status(500).json(error)
